@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "CUSTOMER")
 public class CustomerVO {
-
 	@Id
 	@Column(name = "CUSTOMER_ID")
 	private Integer customerId;
@@ -23,5 +22,4 @@ public class CustomerVO {
 
 	@Column(name = "CUSTOMER_EMAIL")
 	private String customerEmail;
-
 }

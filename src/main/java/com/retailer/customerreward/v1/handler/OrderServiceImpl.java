@@ -7,9 +7,11 @@ import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.retailer.customerreward.entity.CustomerVO;
 import com.retailer.customerreward.entity.OrderVO;
 import com.retailer.customerreward.exception.CustomerRewardException;
 import com.retailer.customerreward.model.v1.Order;
+import com.retailer.customerreward.repository.CustomerRepository;
 import com.retailer.customerreward.repository.OrderRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -20,16 +22,22 @@ public class OrderServiceImpl implements OrderService {
 
 	OrderRepository orderRepository;
 	
+	CustomerRepository customerRepository;
 	
 	@Autowired
-	public OrderServiceImpl(OrderRepository orderRepository) {
+	public OrderServiceImpl(OrderRepository orderRepository, CustomerRepository customerRepository) {
 		this.orderRepository = orderRepository;
+		this.customerRepository = customerRepository;
 	}
 
 
 	@Override
 	public Order saveOrder(Order order, Integer customerIdentifier) throws CustomerRewardException {
 		try {
+			CustomerVO vo = customerRepository.findById(customerIdentifier).get();
+			if(vo == null) {
+				throw new CustomerRewardException("Customer not found for Id "+ customerIdentifier);
+			}
 			OrderVO orderVO = new OrderVO();
 			Random ran = new Random();
 			Integer x = ran.nextInt(6) + 5;
@@ -40,9 +48,9 @@ public class OrderServiceImpl implements OrderService {
 			OrderVO savedOrderVO =  orderRepository.save(orderVO);
 			log.info("Order saved for customer id {}", customerIdentifier);
 			return setOrderDetails(savedOrderVO);
-		}catch(Exception ex) {
+		} catch(Exception ex) {
 			log.error("Exception while saving customer details"+ ex.getMessage());
-			throw new CustomerRewardException("Exception while saving customer details"+ ex.getMessage());
+			throw new CustomerRewardException("Exception while saving order details "+ ex.getMessage());
 		}
 	}
 

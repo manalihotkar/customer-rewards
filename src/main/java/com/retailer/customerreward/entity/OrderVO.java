@@ -27,6 +27,4 @@ public class OrderVO {
 	
 	@Column(name="ORDER_DATE")
 	private LocalDate orderDate;
-	
-
 }
